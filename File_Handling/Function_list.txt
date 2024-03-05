@@ -13,3 +13,13 @@ int stat(const char *restrict pathname, struct stat *restrict buf);
 int chmod(const char *pathname, mode_t mode);
 int chown(const char *pathname, uid_t owner, gid_t group);
 int link(const char* existingpath, const char *newpath);
+stat(filename, stat *st);
+
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <sys/types.h>
+#include <fcntl.h>
+#include <sys/stat.h>
+#include <errno.h>
