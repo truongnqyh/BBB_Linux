@@ -13,7 +13,7 @@ int main()
 {
     int position_read = 0;
     char *buffer = NULL;
-	int open_fd,read_fd = 0; 
+    int open_fd,read_fd = 0; 
     off_t return_lseek = 0;
     struct stat st;
     int size = 0;
