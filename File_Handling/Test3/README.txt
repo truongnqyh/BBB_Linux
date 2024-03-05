@@ -1,0 +1,1 @@
+Write program my_ls allowing show information about file in directory. Incluing size, modified time, owner, group

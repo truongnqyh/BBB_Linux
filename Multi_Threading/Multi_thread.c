@@ -3,7 +3,7 @@
 
 /* This's main thread func */
 
-/* Using only one variable sum will raise error
+/* Using only one variable sum will raise error, race condition -> need to use 2 seperated variable or use lock (mutex, smp, ...)
 int sum = 0; -> wrong 
 volatile sum = 0; -> wrong
 */

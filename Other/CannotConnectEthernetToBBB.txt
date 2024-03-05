@@ -1,0 +1,18 @@
+Edit /etc/network/interface
+
+auto lo
+iface lo inet loopback
+
+auto eth0
+iface eth0 inet static
+        address 192.168.7.2 --> BBB ip addr
+        netmask 255.255.255.0
+        broadcast 192.168.7.255
+        gateway 192.168.7.1 --> host's ip
+
+--> One issue that i face with my PC(HP Zbook G3 or other HP PC maybe)
+I cannot both turn on Wifi and get the ethernet via router at the same time then i cannot share internet from wifi to ethernet. 
+The reason is from the BIOS in my PC, the option LAN/WLAN auto switching is turned on by default. Then i only can use one option
+at a particular time.
+    To fix this, enter BIOS with F10 while when PC's doing some initial configuration. Setting is located in Advanced tab, 
+then choose Build-In Device Options link. Disable LAN/WLAN auto switching and restart. Then it works for me.
