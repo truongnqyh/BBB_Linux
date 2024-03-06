@@ -12,7 +12,7 @@ iface eth0 inet static
 
 --> One issue that i face with my PC(HP Zbook G3 or other HP PC maybe)
 I cannot both turn on Wifi and get the ethernet via router at the same time then i cannot share internet from wifi to ethernet. 
-The reason is from the BIOS in my PC, the option LAN/WLAN auto switching is turned on by default. Then i only can use one option
+The problem is "BIOS" in my PC. The option "LAN/WLAN auto switching" is turned on by default. Then i can only use Wifi or ethernet
 at a particular time.
-    To fix this, enter BIOS with F10 while when PC's doing some initial configuration. Setting is located in Advanced tab, 
-then choose Build-In Device Options link. Disable LAN/WLAN auto switching and restart. Then it works for me.
+    To fix this, enter "BIOS" with "F10" while when PC's doing some initial configuration. Setting is located in "Advanced" tab, 
+then choose "Build-In Device Options". Disable LAN/WLAN auto switching and restart. It works for me :D
