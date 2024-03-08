@@ -98,7 +98,6 @@ void Create_File(Types Type)
         break;
     }
 
-    /* No multithread */
     begin = clock();
     length = sizeof("/home/truong/workspace/Linux_Aphu/BBB_Linux/Multi_Threading/Test2/MThread/file0") / sizeof(char);
     srand((int) time(0));
