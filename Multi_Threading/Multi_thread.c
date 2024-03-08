@@ -10,6 +10,7 @@ volatile sum = 0; -> wrong
 int sum1 = 0;
 int sum2 = 2;
 pthread_mutex_t sum1_lock;
+
 void *sum_1(void *arg)
 {
     int i = 0;
