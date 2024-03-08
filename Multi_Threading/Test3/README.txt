@@ -1,1 +1,1 @@
-Viết chương trình C tạo 2 thread, cả 2 thread lần lượt tăng biến đó lên 1 đơn vị, sử dụng mutex để đồng bộ việc ghi vào biến đó.
+Write a program to create 2 thread which both increase one variable +1, use mutex to synchronize writing to that variable.
