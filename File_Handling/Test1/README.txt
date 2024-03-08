@@ -1,0 +1,1 @@
+Create one text file and read it from any position

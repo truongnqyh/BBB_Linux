@@ -3,13 +3,14 @@
 
 /* This's main thread func */
 
-/* Using only one variable sum will raise error
+/* Using only one variable sum will raise error, race condition -> need to use 2 seperated variable or use lock (mutex, smp, ...)
 int sum = 0; -> wrong 
 volatile sum = 0; -> wrong
 */
 int sum1 = 0;
 int sum2 = 2;
 pthread_mutex_t sum1_lock;
+
 void *sum_1(void *arg)
 {
     int i = 0;
