@@ -48,8 +48,8 @@ int main()
     pthread_create(&pt1, NULL, sum_1, NULL);
     pthread_create(&pt2, NULL, sum_2, NULL);
     pthread_join(pt1, NULL);
-    pthread_join(pt1, NULL);
-    pthread_mutex_destroy(&sum1_lock, NULL);
+    pthread_join(pt2, NULL);
+    pthread_mutex_destroy(&sum1_lock);
 
 
     printf("caculated sum : %d\n", sum1 + sum2);
