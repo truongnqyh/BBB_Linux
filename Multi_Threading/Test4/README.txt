@@ -1,1 +1,3 @@
-Viết 1 chương trình C tạo ra 2 thread, 2 thread đều ghi vào chung 1 file, sử dụng mutex để bảo vệ file, nên sử dụng wrapper function thay cho hàm ghi file thông thường.
+Write a function to create 2 thread, each thread both write to one file. 
+Using mutex to protect file and wrapper function instead of normal write function.
+
