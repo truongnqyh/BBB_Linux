@@ -1,13 +1,21 @@
 #include <linux/module.h>
 #include <linux/kernel.h>
-#include <linux/time.h>
 #include <linux/io.h>
 #include <linux/delay.h>
 #include <linux/time.h>
 #include <linux/timer.h>
 #include <linux/slab.h>
 #include <linux/gpio.h>
-#include <linux/interrupt.h>
+#include <linux/init.h>
+
+///< The license type -- this affects runtime behavior
+MODULE_LICENSE("GPL");
+///< The author -- visible when you use modinfo
+MODULE_AUTHOR("Truong Nguyen Van");
+///< The description -- see modinfo
+MODULE_DESCRIPTION("A simple Hello world LKM!");
+///< The version of the module
+MODULE_VERSION("0.1");
 
 #define GPIO_ADDR_BASE (0x44E07000U)
 #define GPIO_ADDR_SIZE (0x1000U)
@@ -26,13 +34,15 @@ static void timer_function(struct timer_list *t)
 
     for (index = 0; index < 10; index++)
     {
+        printk(KERN_INFO "turn on LED...\n");  
         writel_relaxed(DATA_OUT, base_addr + GPIO_SETDO_OFFSET);
         msleep(1000);
-        writel_relaxed(LED, base_addr + GPIO_CLEARDO_OFFSET);
+        printk(KERN_INFO "turn off LED...\n"); 
+        writel_relaxed(DATA_OUT, base_addr + GPIO_CLEARDO_OFFSET);
         msleep(1000);
     }
 }
-int init_module(void) 
+static int blink_init(void) 
 { 
     uint32_t register_data = 0;
     printk(KERN_INFO "Loading hello module...\n"); 
@@ -49,8 +59,11 @@ int init_module(void)
     return 0; 
 } 
   
-void cleanup_module(void) 
+static void blink_exit(void) 
 { 
     del_timer_sync(&my_timer);
     printk(KERN_INFO "Goodbye Mr.\n"); 
 } 
+
+module_init(blink_init);
+module_exit(blink_exit);

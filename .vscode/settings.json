@@ -2,6 +2,11 @@
     "files.associations": {
         "stdio.h": "c",
         "module.h": "c",
-        "kernel.h": "c"
+        "kernel.h": "c",
+        "interrupt.h": "c",
+        "miscdevice.h": "c",
+        "ioctl.h": "c",
+        "init.h": "c",
+        "uaccess.h": "c"
     }
 }

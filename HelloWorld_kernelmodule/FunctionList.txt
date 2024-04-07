@@ -1,5 +1,5 @@
-scp blink.ko debian@192.168.7.2:/home/debian
-gcc -o blink -g blink.c
+scp pcd_mul_devs.ko debian@192.168.7.2:/home/debian
+gcc -o app -g app.c
 
 int init_module(void) 
 { 
@@ -27,4 +27,12 @@ static void timer_function(struct timer_list *t);
 timer_setup(&mytimer, timer_function, 0);
 add_timer(&mytimer);
 del_timer_sync(&mytimer);
-gpio_set_value
+gpio_set_value(LED, led_trigger);
+gpio_is_valid(LED);
+gpio_request(LED, "LED");
+gpio_free(LED);
+/********* interrupt *******/
+static irqreturn_t button_isr(int irq, void *data);
+ret = request_irq(irq, button_isr, IRQF_TRIGGER_RISING, "button_gpio20", BUTTON_DEV);
+irq = gpio_to_irq(GPIO0_31);
+free_irq(irq, BUTTON_DEV);
