@@ -1,4 +1,4 @@
-scp pcd_mul_devs.ko debian@192.168.7.2:/home/debian
+scp pcd_platform_driver.ko pcd_platform_setup.ko debian@192.168.7.2:/home/debian
 gcc -o app -g app.c
 
 int init_module(void) 
@@ -35,4 +35,4 @@ gpio_free(LED);
 static irqreturn_t button_isr(int irq, void *data);
 ret = request_irq(irq, button_isr, IRQF_TRIGGER_RISING, "button_gpio20", BUTTON_DEV);
 irq = gpio_to_irq(GPIO0_31);
-free_irq(irq, BUTTON_DEV);
+free_irq(irq, BUTTON_DEV); 
