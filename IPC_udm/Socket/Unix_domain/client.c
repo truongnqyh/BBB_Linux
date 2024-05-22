@@ -4,7 +4,7 @@
 #include <sys/socket.h>
 #include <sys/un.h>
 
-#define SOCKET_NAME "tmp/unixsocket_test"
+#define SOCKET_NAME "socketdemo/unixsocket_test"
 #define BUFFER_SIZE 128
 #define MAX_CLIENTS_SUPPORT 32
 #define CURRENT_CLIENT 0
@@ -60,9 +60,7 @@ int main (int argc, char *argv[]){
     printf("%s\n", buffer);
 
     /* Close socket. */
-
     close(data_socket);
-
     exit(EXIT_SUCCESS);
 
 }
