@@ -22,7 +22,7 @@ int main (int argc, char *argv[]){
     routing_table_list_struct_t head;
 
     /* Init linked list */
-    head->next = NULL;
+    head = init_head(head);
     /* Guarantee there's no socket from the last run */
     unlink(SOCKET_NAME);
     /* Create master socket */
@@ -99,7 +99,7 @@ int main (int argc, char *argv[]){
                 printf("\n");
                 /* Ex: [C 122.1.1.1 32 10.1.1.1 Ethernet1] */
                 printf("Enter your service sever want to send to client\n");
-                scanf("%s", buffer);
+                fgets(buffer, BUFFER_SIZE, stdin);
                 /* Check format of input string */
                 if(check_format_input_string(buffer, msg_inf) == true){
                     routing_table_struct_t local_data = (routing_table_struct_t )malloc(sizeof(data_info_t));
@@ -185,6 +185,7 @@ int main (int argc, char *argv[]){
             }
         }
     } /* Go back to select() and block */
+    free(head);
     close(connection_socket);
     remove_from_monitor_fd_set(connection_socket);
     printf("Server exit\n");

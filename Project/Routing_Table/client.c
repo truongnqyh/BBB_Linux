@@ -23,7 +23,7 @@ int main (int argc, char *argv[]){
     routing_table_list_struct_t head;
 
     /* Init linked list */
-    head->next = NULL;
+    head = init_head(head);
     /* Create data socket */
     data_socket = socket(AF_UNIX, SOCK_STREAM, 0);  
     if(data_socket == -1){

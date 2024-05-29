@@ -72,6 +72,19 @@ static routing_table_list_struct_t add_entry_dir(routing_table_list_struct_t hea
     return head;
 }
 
+routing_table_list_struct_t init_head(routing_table_list_struct_t head)
+{
+    head = (routing_table_list_struct_t)malloc(sizeof(struct routing_table_list_struct));
+    if (head == NULL) {
+        printf("Memory allocation failed!\n");
+        return;
+    }
+    head->msg_info = 0; // Set data to 0 (or any other desired value)
+    head->next = NULL; // Set next pointer to NULL initially
+
+    return head;
+}
+
 static routing_table_list_struct_t create_new_entrydir_node(const routing_table_struct_t inputEntryInfo)
 {
     routing_table_list_struct_t temp = NULL; // declare a node
@@ -296,7 +309,7 @@ routing_table_list_struct_t flush_routing_table_info(routing_table_list_struct_t
     return head;
 }
 
-bool check_desIP_valid(char* dest)
+bool check_desIP_valid(char dest[DEST_SIZE])
 {
     bool ret_val = true;
     int count = 0;
@@ -314,7 +327,7 @@ bool check_desIP_valid(char* dest)
             count ++;
             token = strtok(NULL, ".");
         }
-        if(3 != count)
+        if(4 != count)
         {
             printf("Destination IP address format is wrong\n");
             ret_val = false;
@@ -358,7 +371,7 @@ bool check_gateway_valid(char* gateway)
             count ++;
             token = strtok(NULL, ".");
         }
-        if(3 != count)
+        if(4 != count)
         {
             printf("Gateway IP address format is wrong\n");
             ret_val = false;
@@ -368,10 +381,12 @@ bool check_gateway_valid(char* gateway)
     return ret_val;
 }
 
-bool check_format_input_string(char* input_string, msg_t *msg_info)
+bool check_format_input_string(char input_string[BUFFER_SIZE], msg_t *msg_info)
 {
     bool ret_val = true;
     char *token;
+    char *token_check;
+    size_t lenght;
 
     token = strtok(input_string, " ");
     if(token != NULL){
@@ -379,29 +394,39 @@ bool check_format_input_string(char* input_string, msg_t *msg_info)
             case 'C':
                 msg_info->opcode = CREATE;
                 token = strtok(NULL, " ");
-                if((check_desIP_valid(token) == false) && (token == NULL)){
+                lenght = strlen(token) + 1;
+                token_check = (char *)malloc(lenght*sizeof(char));
+                memcpy(token_check, token, lenght);
+                if((check_desIP_valid(token_check) == false) || (token == NULL)){
                     ret_val = false;
                 }
                 else{
-                    strcpy(msg_info->data.destination, token);
+                    free(token_check);
+                    memcpy(msg_info->data.destination, token, sizeof(token));
                     token = strtok(NULL, " ");
-                    if((check_mask_valid(token) == false) && (token == NULL)){
+                    lenght = strlen(token) + 1;
+                    token_check = (char *)malloc(lenght*sizeof(char));
+                    memcpy(token_check, token, lenght);
+                    if((check_mask_valid(token_check) == false) || (token == NULL)){
                         ret_val = false;
                     }
                     else{
-                        strcpy(msg_info->data.mask, token);
+                        free(token_check);
+                        memcpy(msg_info->data.mask, token, sizeof(token));
                         token = strtok(NULL, " ");
-                        if((check_gateway_valid(token) == false) && (token == NULL)){
+                        memset(token_check, NULL ,sizeof(token));
+                        memcpy(token_check, token, sizeof(token));
+                        if((check_gateway_valid(token_check) == false) || (token == NULL)){
                             ret_val = false;
                         }
                         else{
-                            strcpy(msg_info->data.gateway_ip, token);
+                            memcpy(msg_info->data.gateway_ip, token, sizeof(token));
                             token = strtok(NULL, " ");
                             if(token == NULL){
                                 ret_val = false;
                             }
                             else{
-                                strcpy(msg_info->data.OIF, token);
+                                memcpy(msg_info->data.OIF, token, sizeof(token));
                                 token = strtok(NULL, " ");
                                 if(token != NULL){
                                     printf("Too many arguments\n");
@@ -415,19 +440,19 @@ bool check_format_input_string(char* input_string, msg_t *msg_info)
             case 'U':
                 msg_info->opcode = UPDATE;
                 token = strtok(NULL, " ");
-                if((check_desIP_valid(token) == false) && (token == NULL)){
+                if((check_desIP_valid(token) == false) || (token == NULL)){
                     ret_val = false;
                 }
                 else{
                     strcpy(msg_info->data.destination, token);
                     token = strtok(NULL, " ");
-                    if((check_mask_valid(token) == false) && (token == NULL)){
+                    if((check_mask_valid(token) == false) || (token == NULL)){
                         ret_val = false;
                     }
                     else{
                         strcpy(msg_info->data.mask, token);
                         token = strtok(NULL, " ");
-                        if((check_gateway_valid(token) == false) && (token == NULL)){
+                        if((check_gateway_valid(token) == false) || (token == NULL)){
                             ret_val = false;
                         }
                         else{
@@ -451,13 +476,13 @@ bool check_format_input_string(char* input_string, msg_t *msg_info)
             case 'D':
                 msg_info->opcode = DELETE;
                 token = strtok(NULL, " ");
-                if((check_desIP_valid(token) == false) && (token == NULL)){
+                if((check_desIP_valid(token) == false) || (token == NULL)){
                     ret_val = false;
                 }
                 else{
                     strcpy(msg_info->data.destination, token);
                     token = strtok(NULL, " ");
-                    if((check_mask_valid(token) == false) && (token == NULL)){
+                    if((check_mask_valid(token) == false) || (token == NULL)){
                         ret_val = false;
                     }
                     else{

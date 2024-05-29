@@ -40,6 +40,7 @@ routing_table_list_struct_t add_last_entry_list(routing_table_list_struct_t head
 routing_table_list_struct_t remove_node_list(routing_table_list_struct_t head, routing_table_struct_t inputEntryInfo);
 routing_table_list_struct_t update_entry_table(routing_table_list_struct_t head, routing_table_struct_t inputEntryInfo);
 void show_routing_table_info(routing_table_list_struct_t head);
+routing_table_list_struct_t init_head(routing_table_list_struct_t head);
 routing_table_list_struct_t flush_routing_table_info(routing_table_list_struct_t head);
 bool check_condition(routing_table_list_struct_t head, data_info_t msg_info, FUNCTION opcode);
 /**********************************************************/
