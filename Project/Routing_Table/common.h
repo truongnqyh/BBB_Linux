@@ -7,7 +7,7 @@
 #include <sys/select.h>
 #include <stdbool.h>
 #include "types.h"
-
+#include <ctype.h> // For isspace()
 /**************************************************************/
 struct routing_table_struct
 {
@@ -46,5 +46,6 @@ bool check_condition(routing_table_list_struct_t head, data_info_t msg_info, FUN
 /**********************************************************/
 bool check_format_input_string(char* input_string, msg_t *msg_info);
 bool check_desIP_valid(char* dest);
-bool check_mask_valid(char* mask);
+bool check_mask_valid(char* mask, int size);
 bool check_gateway_valid(char* gateway);
+bool check_OIF_valid(char* oif);

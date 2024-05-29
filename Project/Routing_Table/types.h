@@ -1,5 +1,7 @@
 #define DEST_SIZE 16
 #define GATEW_SIZE 16
+#define MASK_SIZE 3
+#define OIF_SIZE 16
 typedef enum{
     CREATE,
     UPDATE,
@@ -10,9 +12,9 @@ typedef enum{
 
 typedef struct data_info{
     char destination[DEST_SIZE];
-    char mask;
+    char mask[MASK_SIZE];
     char gateway_ip[GATEW_SIZE];
-    char OIF;
+    char OIF[OIF_SIZE];
 }data_info_t;
 
 typedef struct msg{

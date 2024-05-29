@@ -9,6 +9,34 @@
 
 #define SOCKET_NAME "socketdemo/unixsocket_test"
 
+void decodeEscapedString(char* input) {
+    char* src = input;
+    char* dest = input;
+
+    while (*src) {
+        if (*src == '\\' && *(src + 1)) {
+            switch (*(src + 1)) {
+                case '0':
+                    *dest = '\0'; // Replace \000 with null character
+                    break;
+                case '1':
+                    *dest = '1'; // Replace \061 with '1'
+                    break;
+                default:
+                    // Leave other characters unchanged
+                    *dest = *src;
+            }
+            src += 2; // Skip the escaped sequence
+        } else {
+            // Copy regular characters
+            *dest = *src;
+            src++;
+        }
+        dest++;
+    }
+    *dest = '\0'; // Null-terminate the resulting string
+}
+
 int main (int argc, char *argv[]){
     struct sockaddr_un server_address;
     int connection_socket;
@@ -19,10 +47,8 @@ int main (int argc, char *argv[]){
     int temp_fd;
     int temp_data;
     char buffer[BUFFER_SIZE];
-    routing_table_list_struct_t head;
+    routing_table_list_struct_t head = NULL;
 
-    /* Init linked list */
-    head = init_head(head);
     /* Guarantee there's no socket from the last run */
     unlink(SOCKET_NAME);
     /* Create master socket */
@@ -108,7 +134,7 @@ int main (int argc, char *argv[]){
                     {
                     case (CREATE):
                         if(check_condition(head, msg_inf->data, msg_inf->opcode) == true){
-                            add_last_entry_list(head, local_data);
+                            head = add_last_entry_list(head, local_data);
                             ret_val = true;
                         }
                         break;
@@ -137,7 +163,6 @@ int main (int argc, char *argv[]){
                         ret_val = write(data_socket, buffer, BUFFER_SIZE);
                     }
                     free(msg_inf);
-                    free(local_data);
                 }
             }
 
