@@ -43,6 +43,7 @@ void show_routing_table_info(routing_table_list_struct_t head);
 routing_table_list_struct_t init_head(routing_table_list_struct_t head);
 routing_table_list_struct_t flush_routing_table_info(routing_table_list_struct_t head);
 bool check_condition(routing_table_list_struct_t head, data_info_t msg_info, FUNCTION opcode);
+void send_rtable_to_newly_client(int fd, routing_table_list_struct_t head);
 /**********************************************************/
 bool check_format_input_string(char* input_string, msg_t *msg_info);
 bool check_desIP_valid(char* dest);
