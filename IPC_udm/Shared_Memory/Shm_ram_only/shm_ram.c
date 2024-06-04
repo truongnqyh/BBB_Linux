@@ -20,8 +20,8 @@
     * MAP_SHARED: The mapping is shared.
     * MAP_PRIVATE: The mapping is private.
     * MAP_ANONYMOUS: The mapping is not backed by any file.
- * offset: specifies the starting position in the file where the mapping begins
  * fd: file descriptor
+ * offset: specifies the starting position in the file where the mapping begins
 ***/
 int main(int argc, char *argv[]){
     int *ptr;

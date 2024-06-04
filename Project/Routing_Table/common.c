@@ -1,6 +1,6 @@
 #include "common.h"
-
 int monitor_fd_set[MAX_CLIENTS_SUPPORT];
+pid_t client_pid_set[MAX_CLIENTS_SUPPORT];
 msg_t routing_table_info[MAX_DESTINATION];
 
 
@@ -27,6 +27,14 @@ void init_monitor_fd_set(){
     }
 }
 
+void init_client_pid_set(){
+    int index = 0;
+
+    for(index = 0; index < MAX_CLIENTS_SUPPORT; index ++){
+        client_pid_set[index] = -1; 
+    }
+}
+
 void add_to_monitor_fd_set(int fd){
     int index = 0;
 
@@ -38,12 +46,49 @@ void add_to_monitor_fd_set(int fd){
     }
 }
 
+bool check_available_pid(pid_t pid){
+    int index = 0;
+    bool ret_val = true;
+
+    for(index = 0; index < MAX_CLIENTS_SUPPORT; index ++){
+        if(client_pid_set[index] == pid){
+            ret_val = false;
+            break;
+        }
+    }
+
+    return ret_val;
+}
+
+void add_to_pid_set(pid_t pid){
+    int index = 0;
+    bool ret_val = true;
+
+    for(index = 0; index < MAX_CLIENTS_SUPPORT; index ++){
+        if(client_pid_set[index] == -1){
+            client_pid_set[index] = pid;
+            break;
+        }
+    }
+}
+
 void remove_from_monitor_fd_set(int fd){
     int index = 0;
 
     for(index = 0; index < MAX_CLIENTS_SUPPORT; index ++){
         if(monitor_fd_set[index] == fd){
             monitor_fd_set[index] = -1;
+            break;
+        }
+    }
+}
+
+void remove_from_client_pid_set(pid_t pid){
+    int index = 0;
+
+    for(index = 0; index < MAX_CLIENTS_SUPPORT; index ++){
+        if(client_pid_set[index] == pid){
+            client_pid_set[index] = -1;
             break;
         }
     }
@@ -226,7 +271,7 @@ bool check_condition(routing_table_list_struct_t head, data_info_t msg_info, FUN
                 ret_val = false;
             }
             else{
-                while (ptr->next != NULL)
+                while (ptr != NULL)
                 {
                     if((strcmp(ptr->msg_info->msg.destination, msg_info.destination) == 0) \
                     && (strcmp(ptr->msg_info->msg.mask, msg_info.mask) == 0)){
@@ -284,7 +329,7 @@ void show_routing_table_info(routing_table_list_struct_t head)
     char dest_mask[24];
     ptr = head;
     if(NULL == ptr){
-        printf("------> The table is empty, there's nothing to show\n");
+        printf("------> The routing table is empty, there's nothing to show\n");
     }
     else{ 
         printf("%-24s%-24s%-24s\n","Destination/Mask      |","GatewayIP             |","OIF                   |");
@@ -407,16 +452,17 @@ bool check_OIF_valid(char* oif)
     return ret_val;
 }
 
-bool check_format_input_string(char input_string[BUFFER_SIZE], msg_t *msg_info)
+bool check_format_input_string(char input_string[BUFFER_SIZE], msg_t *msg_info, mac_table_struct_t mac_addr, int* is_RT_MAC)
 {
     bool ret_val = true;
     char *token;
-    char *token_check;
     size_t lenght;
     int index = 0;
     char* result;
     int mask_size;
-
+    char copy_buffer[MAC_ADDR_LEN];
+    
+    *is_RT_MAC = IS_RT;
     token = strtok(input_string, " ");
     if(token != NULL){
         switch (*token){
@@ -426,13 +472,26 @@ bool check_format_input_string(char input_string[BUFFER_SIZE], msg_t *msg_info)
                 {
                     token = strtok(NULL, " ");
                     if(token == NULL){
-                        ret_val = false;
+                        if(index == 1){
+                            *is_RT_MAC = IS_MAC;
+                            if(check_format_MAC_address(copy_buffer) == true){
+                                memcpy(mac_addr->mac, copy_buffer, MAC_ADDR_LEN - 1);
+                                return true;
+                            }
+                            else{
+                                return false;
+                            }
+                        }
+                        else{
+                            ret_val = false;
+                        }
                     }
                     else{
                         switch ((index))
                         {
                         case (0):
                             memcpy(msg_info->data.destination, token, strlen(token) + 1);
+                            memcpy(copy_buffer, token, MAC_ADDR_LEN);
                             break;
                         case (1):
                             mask_size = strlen(token);
@@ -484,13 +543,26 @@ bool check_format_input_string(char input_string[BUFFER_SIZE], msg_t *msg_info)
                 {
                     token = strtok(NULL, " ");
                     if(token == NULL){
-                        ret_val = false;
+                        if(index == 1){
+                            *is_RT_MAC = IS_MAC;
+                            if(check_format_MAC_address(copy_buffer) == true){
+                                memcpy(mac_addr->mac, copy_buffer, MAC_ADDR_LEN - 1);
+                                return true;
+                            }
+                            else{
+                                return false;
+                            }
+                        }
+                        else{
+                            ret_val = false;
+                        }
                     }
                     else{
                         switch ((index))
                         {
                         case (0):
                             memcpy(msg_info->data.destination, token, strlen(token) + 1);
+                            memcpy(copy_buffer, token, MAC_ADDR_LEN);
                             break;
                         case (1):
                             mask_size = strlen(token);
@@ -541,24 +613,36 @@ bool check_format_input_string(char input_string[BUFFER_SIZE], msg_t *msg_info)
                 {
                     token = strtok(NULL, " ");
                     if(token == NULL){
-                        ret_val = false;
+                        if(index == 1){
+                            *is_RT_MAC = IS_MAC;
+                            if(check_format_MAC_address(copy_buffer) == true){
+                                memcpy(mac_addr->mac, copy_buffer, MAC_ADDR_LEN - 1);
+                                return true;
+                            }
+                            else{
+                                return false;
+                            }
+                        }
+                        else{
+                            ret_val = false;
+                        }
                     }
                     else{
                         switch ((index))
                         {
                         case (0):
                             memcpy(msg_info->data.destination, token, strlen(token) + 1);
+                            memcpy(copy_buffer, token, MAC_ADDR_LEN);
                             break;
                         case (1):
-                            /* should be 1\n or 31\n -> length should be 3 or 2 */
-                            mask_size = strlen(token) - 1;
-                            if((mask_size != 1) && (mask_size != 2))
+                            mask_size = strlen(token);
+                            if(mask_size > 2)
                             {
-                                printf("Mask format of string is wrong\n");
+                                printf("Mask is too long\n");
                                 ret_val = false;
                                 break;
                             }
-                            memcpy(msg_info->data.mask, token, mask_size);
+                            memcpy(msg_info->data.mask, token, strlen(token) + 1);
                             break;
                         default:
                             break;
@@ -585,7 +669,7 @@ bool check_format_input_string(char input_string[BUFFER_SIZE], msg_t *msg_info)
                 msg_info->opcode = SHOW;
                 token = strtok(NULL, " ");
                 if((token == NULL)){
-
+                    /* Do nothing */
                 }
                 else{
                     printf("invalid S(show) option\n");
@@ -595,10 +679,20 @@ bool check_format_input_string(char input_string[BUFFER_SIZE], msg_t *msg_info)
                 msg_info->opcode = FLUSH;
                 token = strtok(NULL, " ");
                 if(token == NULL){
-
+                    /* Do nothing */
                 }
                 else{
                     printf("invalid F(flush) option\n");
+                }
+                break;
+            case 'Q':
+                msg_info->opcode = QUIT;
+                token = strtok(NULL, " ");
+                if(token == NULL){
+                    /* Do nothing */
+                }
+                else{
+                    printf("invalid Q(quit) option\n");
                 }
                 break;
             default:
@@ -622,8 +716,26 @@ void send_rtable_to_newly_client(int fd, routing_table_list_struct_t head){
         ptr->msg_info->msg.mask, \
         ptr->msg_info->msg.gateway_ip, \
         ptr->msg_info->msg.OIF);
-        printf("%s\n", buffer);
         write(fd, buffer, BUFFER_SIZE);
         ptr = ptr->next;
+    }
+}
+
+void show_pid_table(void){
+    int index = 0;
+    int count = 0;
+
+    printf("PID table:\n");
+    for(index = 0; index < MAX_CLIENTS_SUPPORT; index ++){
+        if(client_pid_set[index] != -1){
+            count ++;
+            printf("%d\n",client_pid_set[index]);
+        }
+    }
+    if(count == 0){
+        printf("Empty\n");
+    }
+    else{
+        printf("Num of clients are being connected: %d\n", count);
     }
 }

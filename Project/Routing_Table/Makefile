@@ -1,28 +1,18 @@
-# Makefile for server and client
-
-# Compiler and flags
 CC = gcc
-CFLAGS = -Wall -Wextra -g
+CFLAGS = -Wall -lrt -g
+DEPS = common.h types.h common_mac.h
+OBJ = server.o common.o common_mac.o
 
-# Targets
-TARGET = client server
+%.o: %.c $(DEPS)
+	$(CC) -c -o $@ $< $(CFLAGS)
 
-# Default target
-all: $(TARGET)
+server: $(OBJ)
+	$(CC) -o $@ $^ $(CFLAGS)
 
-# Compile common object file
-common.o: common.c common.h types.h
-	$(CC) $(CFLAGS) -c common.c -o common.o
+client: client.o common.o common_mac.o
+	$(CC) -o $@ $^ $(CFLAGS)
 
+.PHONY: clean
 
-# Compile client
-client: client.c common.h common.o
-	$(CC) $(CFLAGS) client.c common.o -o client
-
-# Compile server
-server: server.c common.h common.o
-	$(CC) $(CFLAGS) server.c common.o -o server
-
-# Clean up
 clean:
-	rm -f $(TARGET) common.o
+	rm -f *.o server client

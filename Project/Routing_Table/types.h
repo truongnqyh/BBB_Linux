@@ -7,7 +7,8 @@ typedef enum{
     UPDATE,
     DELETE,
     SHOW,
-    FLUSH
+    FLUSH,
+    QUIT
 }FUNCTION;
 
 typedef struct data_info{
@@ -21,6 +22,7 @@ typedef struct msg{
     FUNCTION opcode;
     data_info_t data;
 }msg_t;
+
 
 
 /* strtok */
