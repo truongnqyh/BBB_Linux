@@ -1,1 +1,1 @@
-gcc helloworld.c -o helloworld -lpthread
+gcc mutex.c -o mutex -lpthread
