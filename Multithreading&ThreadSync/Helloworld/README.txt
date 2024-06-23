@@ -1,1 +1,1 @@
-gcc mutex.c -o mutex -lpthread
+gcc dnphil.c -o dnphil -lpthread
